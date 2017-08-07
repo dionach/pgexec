@@ -19,3 +19,10 @@ $ ./pg_exec.sh --help
         -s, --source            The source file to compile the library from
         -f, --function          The name of the function to be called in the library
 ```
+
+The libraries directory contains pre-compiled libraries for the 9.x branch, which can be used with the "-L" flag. To use your own library, or when using this tool with the 8.x branch, you will have to install PostgreSQL from [source](https://www.postgresql.org/ftp/source/). The major version installed must match that used by the target server.
+
+This script requires the PostgreSQL binaries to be in the path. If you have installed from source following the included instructions, then run the script using:
+```
+PATH="/usr/local/pgsql/bin:$PATH" ./pg_exec.sh
+```
