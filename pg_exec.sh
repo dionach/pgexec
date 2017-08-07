@@ -150,4 +150,4 @@ executeCommand $COMMAND
 # Clean up
 executeCommand "rm $EXPORT_PATH"
 PGPASSWORD=$PASSWORD psql -U $USER -h $HOST -p $PORT -t -c "DELETE FROM pg_largeobject WHERE loid=$LOID; DROP FUNCTION sys(cstring);"
-rm -r $SPLIT_DIR
+rm -rf $SPLIT_DIR
