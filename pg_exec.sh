@@ -15,6 +15,7 @@ function printHelp {
         \t-e, --export\t\tThe path to save the library to on the server\n
         \t-s, --source\t\tThe source file to compile the library from\n
         \t-f, --function\t\tThe name of the function to be called in the library\n
+        \t-b, --blocksize\t\tThe value of LOBLKSIZE. Default 2048
         "
     echo -e $usage
 }
@@ -34,6 +35,7 @@ COMMAND="sleep 10"
 EXPORT_PATH="/tmp/pg_exec.so"
 LIB_SOURCE="pg_exec.c"
 FUNCTION="pg_exec"
+BLOCK_SIZE=2048
 
 while [[ $# -gt 0 ]]; do
     key="$1"
@@ -66,6 +68,10 @@ while [[ $# -gt 0 ]]; do
     	    COMMAND="$2"
     	    shift
     	    ;;
+        -b|--blocksize)
+            BLOCK_SIZE=$2
+            shift
+            ;;
     	-e|--export)
     	   EXPORT_PATH="$2"
     	   shift
@@ -117,7 +123,7 @@ fi
 
 # Split the file into exactly 2048 byte chunks so that it can be stored
 mkdir -p $SPLIT_DIR
-split -b 2048 $LIBRARY $SPLIT_DIR
+split -b $BLOCK_SIZE $LIBRARY $SPLIT_DIR
 
 # Get the id
 LOID=$(PGPASSWORD=$PASSWORD psql -U $USER -h $HOST -p $PORT -t -c 'SELECT lo_creat(-1);' | tr -d '[:space:]') 
@@ -128,7 +134,8 @@ if ! [[ $LOID =~ ^[0-9]+$ ]]; then
 fi
 
 # Construct the query
-QUERY="INSERT INTO pg_largeobject (loid, pageno, data) values "
+QUERY="DELETE FROM pg_largeobject WHERE loid=$LOID;"
+QUERY="$QUERY\nINSERT INTO pg_largeobject (loid, pageno, data) values "
 i=0
 for f in $(ls $SPLIT_DIR | sort); do
 	QUERY="$QUERY ($LOID, $i, decode('$(base64 -w 0 $SPLIT_DIR$f)', 'base64')),"
