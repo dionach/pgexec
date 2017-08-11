@@ -22,7 +22,7 @@ $ ./pg_exec.sh --help
         -f, --function          The name of the function to be called in the library
 ```
 
-The libraries directory contains pre-compiled libraries for the 9.x branch, which can be used with the "-L" flag. To use your own library, or when using this tool with the 8.x branch, you will have to install PostgreSQL from [source](https://www.postgresql.org/ftp/source/). The major version installed must match that used by the target server.
+The libraries directory contains pre-compiled libraries for the 9.x branch, which can be used with the "-L" flag. To use your own library you will have to install PostgreSQL from [source](https://www.postgresql.org/ftp/source/). The major version installed must match that used by the target server.
 
 This script requires the PostgreSQL binaries to be in the path. If you have installed from source following the included instructions, then run the script using:
 ```
