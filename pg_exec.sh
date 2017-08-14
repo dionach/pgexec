@@ -57,7 +57,12 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
     	-h|--host)
-            HOST="$2"
+            if [ -z $2 ]; then
+                printHelp
+                exit 0
+            else
+                HOST="$2"
+            fi
     	    shift
     	    ;;
     	-p|--port)
